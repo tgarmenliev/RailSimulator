@@ -17,21 +17,14 @@ namespace RailSimulator
             Length = 0; //CalculateLength();
         }
         
-        public List<Station> GetStations()
+        public List<string> GetStations()
         {
             return Stops.Select(stop => stop.Station).ToList();
         }
 
-        //TODO
-        public DateTime GetArrivalTime(Station station)
+        public DateTime GetTime(string station, bool arrival)
         {
-            return Stops.Last(stop => stop.Station == station).Arrival;
-        }
-
-        //TODO
-        public DateTime GetDepartureTime(Station station)
-        {
-            return Stops.First(stop => stop.Station == station).Departure;
+            return arrival ? Stops.First(stop => stop.Station == station).Arrival : Stops.First(stop => stop.Station == station).Departure;
         }
         
         public void AddStop(RouteStop stop)
@@ -39,39 +32,32 @@ namespace RailSimulator
             Stops.Add(stop);
         }
 
-        public Station GetFirstStop()
+        public string GetFirstStop()
         {
             return Stops.First().Station;
         }
 
-        public Station GetLastStop()
+        public string GetLastStop()
         {
             return Stops.Last().Station;
         }
 
-        //TODO
-        public DateTime CheckInAtStation(Station station)
+        public DateTime CheckInAtStation(string station)
         {
-            return GetArrivalTime(station);
+            return GetCurrentStop().Departure;
         }
 
-        //TODO
-        public Station CheckOutAtStation(Station station)
-        {
-            return station;
-        }
-
-        public void MoveToNextStop()
+        public string CheckOutAtStation(string station)
         {
             currentStopIndex++;
+            return GetCurrentStation();
         }
-
         public RouteStop GetCurrentStop()
         {
             return Stops[currentStopIndex];
         }
 
-        public Station GetCurrentStation()
+        public string GetCurrentStation()
         {
             return GetCurrentStop().Station;
         }

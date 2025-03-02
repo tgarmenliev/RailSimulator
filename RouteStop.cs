@@ -2,9 +2,9 @@ using System;
 
 namespace RailSimulator
 {
-    public class RouteStop(Station station, DateTime arrival, DateTime departure)
+    public class RouteStop(string station, DateTime arrival, DateTime departure)
     {
-        public Station Station { get; } = station;
+        public string Station { get; } = station;
         public DateTime Arrival { get; } = arrival;
         public DateTime Departure { get; } = departure;
         public bool IsPassed { get; } = false;

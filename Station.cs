@@ -9,13 +9,7 @@ namespace RailSimulator
         protected List<bool> tracks;
         protected List<Train> trainsAtStation;
 
-        public Station(string name, Pair coordinates, List<bool> tracks)
-        {
-            this.name = name;
-            this.coordinates = coordinates;
-            this.tracks = tracks;
-            trainsAtStation = new List<Train>();
-        }
+        protected List<Train> waitingTrains = new List<Train>();
 
         public Station(string name, Pair coordinates, int tracks)
         {
@@ -47,22 +41,42 @@ namespace RailSimulator
 
         public abstract void HandleTrainArrival(Train train);
 
-        // TODO
         public void DepartTrain(Train train)
         {
-            return;
+            if(trainsAtStation.Contains(train))
+            {
+                trainsAtStation.Remove(train);
+                if (train.Track.HasValue) ReleaseTrack(train.Track.Value);
+            }
+            train.Move();
         }
 
-        // TODO
         public int? AssignTrackToTrain(Train train)
         {
-            return null;
+            for (int i = 0; i < tracks.Count; i++)
+            {
+                if (!tracks[i]) // If we have a free track
+                {
+                    tracks[i] = true;
+                    return i;
+                }
+            }
+            return null; // There are no free tracks
         }
 
-        // TODO
         public void ReleaseTrack(int trackNumber)
         {
-            return;
+            if (trackNumber >= 0 && trackNumber < Tracks.Count)
+            {
+                Tracks[trackNumber] = false;
+                
+                if (waitingTrains.Count > 0)
+                {
+                    Train nextTrain = waitingTrains[0];
+                    waitingTrains.RemoveAt(0);
+                    HandleTrainArrival(nextTrain);
+                }
+            }
         }
 
         public override string ToString()
@@ -74,18 +88,30 @@ namespace RailSimulator
     public class SmallStation : Station
     {
 
-        public SmallStation(string name, Pair coordinates, List<bool> tracks) : base(name, coordinates, tracks)
-        {
-        }
-
         public SmallStation(string name, Pair coordinates, int tracks) : base(name, coordinates, tracks)
         {
         }
 
-        // TODO
         public override void HandleTrainArrival(Train train)
         {
-            throw new System.NotImplementedException();
+            // Fast and express trains do not stop at small stations
+            if (train.Type == TrainType.Fast || train.Type == TrainType.Express)
+            {
+                return;
+            }
+
+            int? assignedTrack = AssignTrackToTrain(train);
+
+            if (assignedTrack.HasValue)
+            {
+                train.Track = assignedTrack; // Track is assigned to the train
+                TrainsAtStation.Add(train);
+                return;
+            }
+
+            // If no track is available, the train is added to the waiting list
+            waitingTrains.Add(train);
+            waitingTrains = waitingTrains.OrderBy(t => t.Route.GetTime(Name, true)).ToList();
         }
 
         public override string ToString()

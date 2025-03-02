@@ -12,6 +12,8 @@ namespace RailSimulator
             railwaySystem.AddStation(new SmallStation("S3", new Pair(2, 0), 1));
             railwaySystem.ConnectStations("S1", "S2", 1);
             railwaySystem.ConnectStations("S2", "S3", 1);
+
+            
         }
     }
 }

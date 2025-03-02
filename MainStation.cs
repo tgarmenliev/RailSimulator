@@ -15,15 +15,34 @@ namespace RailSimulator
     public class MainStation : Station
     {
         private List<Service> services = new List<Service>();
-        public MainStation(string name, Pair coordinates, List<bool> tracks, List<Service> services) : base(name, coordinates, tracks)
+        public MainStation(string name, Pair coordinates, int tracks, List<Service> services) : base(name, coordinates, tracks)
         {
             this.services = services;
         }
 
-        // TODO
         public override void HandleTrainArrival(Train train)
         {
-            throw new System.NotImplementedException();
+            int? assignedTrack = AssignTrackToTrain(train);
+
+            if (assignedTrack.HasValue)
+            {
+                train.Track = assignedTrack; // Assign the track to the train
+                TrainsAtStation.Add(train);
+                return;
+            }
+
+            // If no track is available, the train is added to the waiting list
+            waitingTrains.Add(train);
+            waitingTrains = waitingTrains.OrderByDescending(GetTrainPriority).ThenBy(t => t.Route.GetTime(Name, true)).ToList();
+        }
+
+        // Priority: Express > Fast > Passenger > Freight
+        private int GetTrainPriority(Train train)
+        {
+            if (train.Type == TrainType.Express) return 3;
+            if (train.Type == TrainType.Fast) return 2;
+            if (train.Type == TrainType.Passenger) return 1;
+            return 0; // Freight trains are with lower priority
         }
 
         public List<Service> Services

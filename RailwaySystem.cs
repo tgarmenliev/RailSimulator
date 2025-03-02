@@ -135,7 +135,7 @@ namespace RailSimulator
             List<string> movingTrains = new List<string>();
             foreach (Train train in trains)
             {
-                if (train.running)
+                if (train.Running)
                 {
                     movingTrains.Add(train.Id);
                 }

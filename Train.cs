@@ -26,7 +26,7 @@ namespace RailSimulator
         public int Cars { get; }
         public Route Route { get; }
         protected int? track;
-        public bool running { get; } = false;
+        public bool Running { get; } = false;
 
         public Train(string trainId, TrainType trainType, double speed, int cars, Route route)
         {
@@ -52,6 +52,12 @@ namespace RailSimulator
         public string TrainId
         {
             get { return TrainId; }
+        }
+
+        public int? Track
+        {
+            get { return track; }
+            set { track = value; }
         }
         
         public abstract void Move();
