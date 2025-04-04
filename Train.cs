@@ -21,12 +21,12 @@ namespace RailSimulator
     public abstract class Train
     {
         public string Id { get; }
-        public TrainType Type { get; }
-        public double Speed { get; }
-        public int Cars { get; }
-        public Route Route { get; }
+        public TrainType Type { get; private set; }
+        public double Speed { get; protected set; }
+        public int Cars { get; protected set; }
+        public Route Route { get; protected set; }
         protected int? track;
-        public bool Running { get; } = false;
+        public bool Running { get; protected set; } = false;
 
         public Train(string trainId, TrainType trainType, double speed, int cars, Route route)
         {
@@ -51,7 +51,7 @@ namespace RailSimulator
 
         public string TrainId
         {
-            get { return TrainId; }
+            get { return Id; }
         }
 
         public int? Track

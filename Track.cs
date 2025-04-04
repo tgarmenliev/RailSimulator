@@ -6,13 +6,15 @@ namespace RailSimulator
     {
         public Station Start { get; }
         public Station End { get; }
-        private readonly double length;
+        public int maxSpeed { get; private set; }
+        private double length;
 
-        public Track(Station start, Station end, double legth)
+        public Track(Station start, Station end, int maxSpeed, double legth)
         {
-            this.Start = start;
-            this.End = end;
-            length = legth;
+            Start = start;
+            End = end;
+            this.maxSpeed = maxSpeed;
+            this.length = legth;
         }
 
         public bool IsConnectedWith(Station station1, Station station2)

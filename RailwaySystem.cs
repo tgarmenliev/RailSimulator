@@ -5,12 +5,14 @@ namespace RailSimulator
         private List<Station> stations;
         private List<Track> tracks;
         private List<Train> trains;
+        private SimulationClock clock;
 
-        public RailwaySystem()
+        public RailwaySystem(SimulationClock clock)
         {
             stations = new List<Station>();
             tracks = new List<Track>();
             trains = new List<Train>();
+            this.clock = clock;
         }
 
         public List<Station> Stations
@@ -43,13 +45,13 @@ namespace RailSimulator
             tracks.Add(track);
         }
 
-        public void ConnectStations(string station1, string station2, double length)
+        public void ConnectStations(string station1, string station2, int maxSpeed, double length)
         {
             Station? station1ToConnect = stations.Find(station => station.Name == station1);
             Station? station2ToConnect = stations.Find(station => station.Name == station2);
             if (station1ToConnect != null && station2ToConnect != null && !CheckTrack(station1ToConnect, station2ToConnect))
             {
-                Track track = new Track(station1ToConnect, station2ToConnect, length);
+                Track track = new Track(station1ToConnect, station2ToConnect, maxSpeed, length);
                 AddTrack(track);
             }
         }
